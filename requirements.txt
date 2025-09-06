@@ -1,1 +1,8 @@
 uv
+fastapi[all]
+langchain
+langchain-google-genai
+python-dotenv
+sqlalchemy
+uvicorn
+psycopg2-binary
