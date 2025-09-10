@@ -13,7 +13,7 @@ class StoryGenerator:
 
   @classmethod
   def _get_llm(cls):
-    return ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite", api_key=settings.GEMINI_API_KEY)
+    return ChatGoogleGenerativeAI(model="gemini-2.5-flash", api_key=settings.GEMINI_API_KEY)
   
   @classmethod
   def _post_process_response(cls, raw_output: str) -> StoryLLMResponse:
@@ -23,7 +23,7 @@ class StoryGenerator:
     if raw_output.startswith("```json"):
         raw_output = raw_output[len("```json"):]
 
-    raw_output = raw_output.strip()  # bỏ \n đầu/cuối
+    raw_output = raw_output.strip()  # remove \n begin/end
     if raw_output.endswith("```"):
         raw_output = raw_output[:-3].strip()
 
@@ -52,11 +52,11 @@ class StoryGenerator:
           )
       ]).partial(format_instructions=story_parser.get_format_instructions())
 
-      raw_response = llm.invoke(prompt.invoke({"theme": "Hero aventures"})) # TODO: hardcoded theme
-      cls._post_process_response(raw_response.content)
+      raw_response = llm.invoke(prompt.invoke({"theme": theme})) # TODO: hardcoded theme
+      json_response = cls._post_process_response(raw_response.content)
       
 
-      response_text = raw_response
+      response_text = json_response
       if hasattr(raw_response, "content"):
           response_text = raw_response.content
 
